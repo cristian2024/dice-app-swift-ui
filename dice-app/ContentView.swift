@@ -8,14 +8,58 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State var dice1: Int =  Int.random(in: 1...6)
+    @State var dice2: Int =  Int.random(in: 1...6)
+    
+    @State private var hasTimeElapsed = true
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        ZStack{
+            Color.white.ignoresSafeArea()
+            HStack {
+                Image(String(dice1))
+                    .resizable()
+                    .frame(
+                        width: 100,
+                        height: 100
+                    )
+                    .onTapGesture {
+                        if hasTimeElapsed{
+                            Task{
+                                await onClick()
+                            }
+                        }
+                        
+                    }
+                Image(String(dice2))
+                    .resizable()
+                    .frame(
+                        width: 100,
+                        height: 100
+                    )
+                    .onTapGesture {
+                        if hasTimeElapsed{
+                            Task{
+                                await onClick()
+                            }
+                        }
+                    }
+            }
+            .padding()
         }
-        .padding()
+        
+    }
+    
+    private func onClick() async {
+        hasTimeElapsed=false;
+        for _ in (1...6){
+            try? await Task.sleep(nanoseconds: 0_100_000_000)
+            dice1=Int.random(in: 1...6)
+            dice2=Int.random(in: 1...6)
+        }
+        
+        hasTimeElapsed = true
     }
 }
 
